@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Temático do Brasil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #009c3b 0%, #ffdf00 50%, #009c3b 100%);
+            color: #002776;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+        
+        .logo .flag-color {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+        
+        .green { background-color: #009c3b; }
+        .yellow { background-color: #ffdf00; }
+        .blue { background-color: #002776; }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .theme-elements {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .theme-element {
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .theme-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 5px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #002776;
+        }
+        
+        .description {
+            margin: 20px 0;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #002776;
+            color: #ffdf00;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #002776;
+        }
+        
+        .btn:hover {
+            background: #ffdf00;
+            color: #002776;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .characters-section {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .character-card {
+            background: linear-gradient(to bottom, #ffdf00, #fff);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #002776;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .character-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            border: 2px solid #002776;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #009c3b;
+        }
+        
+        .character-class {
+            font-style: italic;
+            color: #002776;
+        }
+        
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            width: 100%;
+        }
+        
+        h2 {
+            color: #009c3b;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ffdf00;
+            padding-bottom: 10px;
+        }
+        
+        /* Modal para detalhes do personagem */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(to bottom, #ffdf00, #fff);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            border: 3px solid #002776;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: #002776;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #009c3b;
+        }
+        
+        .character-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .character-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #002776;
+            margin-bottom: 20px;
+        }
+        
+        .character-bio {
+            text-align: justify;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+        
+        .character-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .stat {
+            background-color: rgba(0, 39, 118, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #009c3b;
+        }
+        
+        @media (max-width: 768px) {
+            .characters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .character-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .character-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .theme-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="flag-color green"></span>
+            <h1>Ordem <span class="flag-color yellow"></span> Progresso <span class="flag-color blue"></span></h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h2>Jornada Épica pelo Brasil</h2>
+            
+            <div class="theme-elements">
+                <div class="theme-element">
+                    <img src="https://placehold.co/100x100/009c3b/FFFFFF?text=🗺️" class="theme-icon" alt="Exploração">
+                    <p>Exploração</p>
+                </div>
+                <div class="theme-element">
+                    <img src="https://placehold.co/100x100/002776/FFFFFF?text=🐉" class="theme-icon" alt="Criaturas">
+                    <p>Criaturas</p>
+                </div>
+                <div class="theme-element">
+                    <img src="https://placehold.co/100x100/FFDF00/002776?text=📖" class="theme-icon" alt="Lendas">
+                    <p>Lendas</p>
+                </div>
+                <div class="theme-element">
+                    <img src="https://placehold.co/100x100/009c3b/FFFFFF?text=🛡️" class="theme-icon" alt="Aventura">
+                    <p>Aventura</p>
+                </div>
+            </div>
+            
+            <div class="description">
+                <p>Em um Brasil onde as lendas e folclore ganham vida, heróis devem se unir para proteger a terra da escuridão que ameaça consumir toda a magia e cultura. Cada região esconde segredos, criaturas místicas e desafios únicos que somente os mais corajosos poderão enfrentar.</p>
+                
+                <p>Neste RPG de mesa, você criará um personagem baseado nas ricas tradições brasileiras, explorando desde a Amazônia até os pampas, enfrentando entidades do folclore como o Saci, Curupira e Iara, enquanto desvenda mistérios históricos e protege o coração cultural do Brasil.</p>
+            </div>
+            
+            <a href="#" class="btn" id="view-characters">Ver Fichas de Personagem</a>
+            
+            <div class="characters-section" id="characters-section">
+                <h2>Fichas de Personagens</h2>
+                <div class="characters-grid">
+                    <div class="character-card" data-character="anita">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=AG" class="character-icon" alt="Anita Garibaldi">
+                        <div class="character-name">Anita Garibaldi</div>
+                        <div class="character-class">Heroína</div>
+                    </div>
+                    <div class="character-card" data-character="iara">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🌊" class="character-icon" alt="Iara">
+                        <div class="character-name">Iara</div>
+                        <div class="character-class">Sereia</div>
+                    </div>
+                    <div class="character-card" data-character="tupa">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🌿" class="character-icon" alt="Tupã">
+                        <div class="character-name">Tupã</div>
+                        <div class="character-class">Xamã</div>
+                    </div>
+                    <div class="character-card" data-character="pedro">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=👨‍🌾" class="character-icon" alt="Pedro">
+                        <div class="character-name">Pedro</div>
+                        <div class="character-class">Lavrador</div>
+                    </div>
+                    <div class="character-card" data-character="maria">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🎵" class="character-icon" alt="Maria">
+                        <div class="character-name">Maria</div>
+                        <div class="character-class">Bardo</div>
+                    </div>
+                    <div class="character-card" data-character="curupira">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🌳" class="character-icon" alt="Curupira">
+                        <div class="character-name">Curupira</div>
+                        <div class="character-class">Guarda-florestal</div>
+                    </div>
+                    <div class="character-card" data-character="saci">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🎩" class="character-icon" alt="Saci">
+                        <div class="character-name">Saci</div>
+                        <div class="character-class">Travesso</div>
+                    </div>
+                    <div class="character-card" data-character="anhanga">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=💎" class="character-icon" alt="Anhanga">
+                        <div class="character-name">Anhanga</div>
+                        <div class="character-class">Feiticeiro</div>
+                    </div>
+                    <div class="character-card" data-character="dandara">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=⚔️" class="character-icon" alt="Dandara">
+                        <div class="character-name">Dandara</div>
+                        <div class="character-class">Guerreira</div>
+                    </div>
+                    <div class="character-card" data-character="jurema">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🌺" class="character-icon" alt="Jurema">
+                        <div class="character-name">Jurema</div>
+                        <div class="character-class">Druida</div>
+                    </div>
+                    <div class="character-card" data-character="tiao">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🏹" class="character-icon" alt="Tião">
+                        <div class="character-name">Tião</div>
+                        <div class="character-class">Caçador</div>
+                    </div>
+                    <div class="character-card" data-character="zumbi">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=👑" class="character-icon" alt="Zumbi">
+                        <div class="character-name">Zumbi</div>
+                        <div class="character-class">Paladino</div>
+                    </div>
+                    <div class="character-card" data-character="andre">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=⛰️" class="character-icon" alt="André">
+                        <div class="character-name">André</div>
+                        <div class="character-class">Explorador</div>
+                    </div>
+                    <div class="character-card" data-character="catarina">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=📚" class="character-icon" alt="Catarina">
+                        <div class="character-name">Catarina</div>
+                        <div class="character-class">Sábia</div>
+                    </div>
+                    <div class="character-card" data-character="paijoao">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🧙" class="character-icon" alt="Pai João">
+                        <div class="character-name">Pai João</div>
+                        <div class="character-class">Mago</div>
+                    </div>
+                    <div class="character-card" data-character="gil">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🥁" class="character-icon" alt="Gil">
+                        <div class="character-name">Gil</div>
+                        <div class="character-class">Batuqueiro</div>
+                    </div>
+                    <div class="character-card" data-character="iemanja">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=🌊" class="character-icon" alt="Iemanjá">
+                        <div class="character-name">Iemanjá</div>
+                        <div class="character-class">Sacerdotisa</div>
+                    </div>
+                    <div class="character-card" data-character="maeana">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=💖" class="character-icon" alt="Mãe Ana">
+                        <div class="character-name">Mãe Ana</div>
+                        <div class="character-class">Curadora</div>
+                    </div>
+                    <div class="character-card" data-character="jorge">
+                        <img src="https://placehold.co/100x100/002776/FFDF00?text=⭐" class="character-icon" alt="Jorge">
+                        <div class="character-name">Jorge</div>
+                        <div class="character-class">Guardiano</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para detalhes do personagem -->
+    <div class="modal" id="character-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="character-details" id="character-details">
+                <!-- Conteúdo preenchido por JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>RPG Temático do Brasil - Explorando o folclore e a cultura brasileira através de aventuras épicas</p>
+        <p>© 2023 - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        // Dados dos personagens
+        const characters = {
+            anita: {
+                name: "Anita Garibaldi",
+                class: "Heroína",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=AG",
+                bio: "Conhecida como a 'Heroína dos Dois Mundos', Anita Garibaldi foi uma revolucionária brasileira que lutou ao lado de seu marido, Giuseppe Garibaldi, em conflitos no Brasil e na Itália. Nascida em Santa Catarina, ela se tornou um símbolo de bravura, determinação e amor pela liberdade.",
+                stats: {
+                    Força: 14,
+                    Agilidade: 16,
+                    Inteligência: 13,
+                    Resistência: 15,
+                    Carisma: 17
+                }
+            },
+            iara: {
+                name: "Iara",
+                class: "Sereia",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=🌊",
+                bio: "Iara é uma sedutora sereia das águas amazônicas, com canto hipnótico que encanta até os mais fortes guerreiros. Protetora dos rios e lagos, ela usa seus poderes aquáticos para defender a floresta daqueles que a ameaçam. Sua beleza é rivalizada apenas por sua ferocidade em batalha.",
+                stats: {
+                    Força: 10,
+                    Agilidade: 16,
+                    Inteligência: 14,
+                    Resistência: 12,
+                    Carisma: 18
+                }
+            },
+            tupa: {
+                name: "Tupã",
+                class: "Xamã",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=🌿",
+                bio: "Tupã é um poderoso xamã indígena que canaliza as forças da natureza e dos espíritos ancestrais. Com profundos conhecimentos sobre plantas medicinais e rituais antigos, ele serve como mediador entre o mundo físico e espiritual, trazendo bênçãos e proteção para seu povo.",
+                stats: {
+                    Força: 9,
+                    Agilidade: 11,
+                    Inteligência: 18,
+                    Resistência: 13,
+                    Carisma: 15
+                }
+            },
+            pedro: {
+                name: "Pedro",
+                class: "Lavrador",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=👨‍🌾",
+                bio: "Pedro é um trabalhador rural das vastas plantações de café do interior paulista. Forte e determinado, conhece cada segredo da terra que cultiva. Sua conexão com o ciclo natural das colheitas lhe concede insights sobre os ritmos da natureza.",
+                stats: {
+                    Força: 16,
+                    Agilidade: 11,
+                    Inteligência: 12,
+                    Resistência: 17,
+                    Carisma: 10
+                }
+            },
+            maria: {
+                name: "Maria",
+                class: "Bardo",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=🎵",
+                bio: "Maria é uma talentosa musicista que percorre o Brasil com seu violão, coletando histórias e canções de cada região. Seu dom musical não apenas entretém, mas também inspira coragem nos aliados e confunde os inimigos com melodias encantadoras.",
+                stats: {
+                    Força: 8,
+                    Agilidade: 14,
+                    Inteligência: 13,
+                    Resistência: 10,
+                    Carisma: 18
+                }
+            },
+            curupira: {
+                name: "Curupira",
+                class: "Guarda-florestal",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=🌳",
+                bio: "O Curupira é um protetor das florestas brasileiras, conhecido por seus pés virados para trás que confundem caçadores e madeireiros. Ele usa seus poderes sobre os animais e a natureza para defender a mata daqueles que a exploram de forma predatória.",
+                stats: {
+                    Força: 15,
+                    Agilidade: 17,
+                    Inteligência: 14,
+                    Resistência: 16,
+                    Carisma: 12
+                }
+            },
+            saci: {
+                name: "Saci",
+                class: "Travesso",
+                image: "https://placehold.co/200x200/002776/FFDF00?text=🎩",
+                bio: "O Saci-Pererê é uma figura travessa do folclore brasileiro, conhecido por suas travessuras e por aparecer como um menino de uma perna só, usando um gorro vermelho e carregando um cachimbo. Apesar de suas brincadeiras, ele possui conhecimentos secretos sobre a floresta.",
+                stats: {
+                    Força: 8,
+                    Agilidade: 18,
+                    Inteligência: 15,
+                    Resistência: 10,
+                    Carisma: 14
+                }
+            }
+            // Os outros personagens teriam estruturas similares
+        };
+
+        // Mostrar/ocultar personagens
+        document.getElementById('view-characters').addEventListener('click', function(e) {
+            e.preventDefault();
+            const characterSection = document.getElementById('characters-section');
+            characterSection.style.display = 'block';
+            characterSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Modal para detalhes do personagem
+        const modal = document.getElementById('character-modal');
+        const closeModal = document.getElementById('close-modal');
+        const characterDetails = document.getElementById('character-details');
+
+        // Adicionar evento de clique para cada card de personagem
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const characterId = card.getAttribute('data-character');
+                const character = characters[characterId];
+                
+                if (character) {
+                    // Preencher os detalhes do personagem no modal
+                    characterDetails.innerHTML = `
+                        <img src="${character.image}" class="character-image" alt="${character.name}">
+                        <h2>${character.name}</h2>
+                        <p class="character-class">${character.class}</p>
+                        <p class="character-bio">${character.bio}</p>
+                        <div class="character-stats">
+                            ${Object.entries(character.stats).map(([stat, value]) => `
+                                <div class="stat">
+                                    <div class="stat-name">${stat}</div>
+                                    <div class="stat-value">${value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    // Mostrar o modal
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        // Fechar o modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Fechar o modal clicando fora dele
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

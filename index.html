@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Temático do Brasil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #009c3b 0%, #ffdf00 50%, #009c3b 100%);
+            color: #002776;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+        
+        .logo .flag-color {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+        
+        .green { background-color: #009c3b; }
+        .yellow { background-color: #ffdf00; }
+        .blue { background-color: #002776; }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .theme-elements {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .theme-element {
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .theme-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 5px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #002776;
+        }
+        
+        .description {
+            margin: 20px 0;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #002776;
+            color: #ffdf00;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid #002776;
+        }
+        
+        .btn:hover {
+            background: #ffdf00;
+            color: #002776;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .characters-section {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .character-card {
+            background: linear-gradient(to bottom, #ffdf00, #fff);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #002776;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .character-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            border: 2px solid #002776;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #009c3b;
+        }
+        
+        .character-class {
+            font-style: italic;
+            color: #002776;
+        }
+        
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            width: 100%;
+        }
+        
+        h2 {
+            color: #009c3b;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ffdf00;
+            padding-bottom: 10px;
+        }
+        
+        /* Modal para detalhes do personagem */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(to bottom, #ffdf00, #fff);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            border: 3px solid #002776;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: #002776;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #009c3b;
+        }
+        
+        .character-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .character-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #002776;
+            margin-bottom: 20px;
+        }
+        
+        .character-bio {
+            text-align: justify;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+        
+        .character-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .stat {
+            background-color: rgba(0, 39, 118, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #009c3b;
+        }
+        
+        @media (max-width: 768px) {
+            .characters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .character-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .character-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .theme-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="flag-color green"></span>
+            <h1>Ordem <span class="flag-color yellow"></span> Progresso <span class="flag-color blue"></span></h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h2>Jornada Épica pelo Brasil</h2>
+            <img src="ordem.jpeg" alt="Italian Trulli" width="300" height="300">
+            
+            
+            <div class="description">
+                <p>Senhoras e senhores, bem-vindos à arena do poder.</p>
+                <p>O mundo atravessa uma era de incertezas. Os estados foram fragmentados, cada um governado por líderes com visões distintas, mas todos diante de um mesmo juramento: provar que são capazes de conduzir seu povo à prosperidade.</p>
+                <p>Vocês, os novos Governantes, foram convocados pelo Conselho Mundial de Mérito — a última instituição confiável neste planeta instável. A missão é clara, mas nada simples: enfrentar sete crises urgentes que ameaçam a sobrevivência de suas nações.</p>
+                <p>Segurança Pública – o crime cresce como uma sombra sobre as ruas, testando a ordem e a paz social.</p>
+                <p>Energia – apagões e escassez exigem soluções inovadoras antes que as cidades mergulhem no caos.</p>
+                <p>Saúde – hospitais lotados e recursos escassos colocam vidas em risco a cada segundo.</p>
+                <p>Educação Popular – a ignorância ameaça o futuro; o saber, agora, é mais valioso que ouro.</p>
+                <p>Água – cada gota conta; a escassez ameaça desertificar cidades inteiras.</p>
+                <p>Corrupção – desvios e tramas ocultas corroem a confiança do povo</p>
+                <p>A cada crise superada, o Conselho concederá uma Medalha de Mérito, símbolo do progresso alcançado. Mas cuidado: nesta disputa, as vitórias de um podem significar o enfraquecimento de outro. Estratégia, visão e firmeza serão tão importantes quanto recursos e aliados.</p>
+                <p>Ao final, apenas o governante com mais medalhas será coroado Líder Supremo, tornando-se a voz mais influente do planeta.</p>
+                <p>A pergunta é… você está pronto para provar que merece governar? Senhoras e senhores, bem vindo a arena do pode’’</p>
+            </div>
+            
+            <a href="#" class="btn" id="view-characters">Ver Fichas de Personagem</a>
+            
+            <div class="characters-section" id="characters-section">
+                <h2>Fichas de Personagens</h2>
+                <div class="characters-grid">
+                    <div class="character-card" data-character="anita">
+                        <img src="ANITA.png" class="character-icon" alt="Anita Garibaldi">
+                        <div class="character-name">Anita Garibaldi</div>
+                    </div>
+                    <div class="character-card" data-character="iara">
+                        <img src="Antonio Lemos.png" class="character-icon" alt="Iara">
+                        <div class="character-name">Antonio Lemos</div>
+                    </div>
+                    <div class="character-card" data-character="tupa">
+                        <img src="1.jpeg" class="character-icon" alt="Tupã">
+                        <div class="character-name">Juscelino Kubitschek</div>
+                    </div>
+                    <div class="character-card" data-character="pedro">
+                        <img src="@.jpeg" class="character-icon" alt="Pedro">
+                        <div class="character-name">Marechal Candido Rondom</div>
+                    </div>
+                    <div class="character-card" data-character="maria">
+                        <img src="Maria.jpeg" class="character-icon" alt="Maria">
+                        <div class="character-name">Maria Firmina dos Reis</div>
+                    </div>
+                    <div class="character-card" data-character="curupira">
+                        <img src="Oitis.jpeg" class="character-icon" alt="Curupira">
+                        <div class="character-name">Maria Ortiz</div>
+                    </div>
+                    <div class="character-card" data-character="nisia">
+                        <img src="Floresta.jpeg" class="character-icon" alt="nisia">
+                        <div class="character-name">Nísia Floresta</div>
+                    </div>
+                    <div class="character-card" data-character="paulo">
+                        <img src="Veio.jpeg" class="character-icon" alt="paulo">
+                        <div class="character-name">Paulo Freire</div>
+                    </div>
+                    <div class="character-card" data-character="soldado">
+                        <img src="sordadinho.jpeg" class="character-icon" alt="soldado">
+                        <div class="character-name">lácido de Castro</div>
+                    </div>
+                    <div class="character-card" data-character="Juca">
+                        <img src="stali.jpeg" class="character-icon" alt="Juca">
+                        <div class="character-name">Romero Jucá</div>
+                    </div>
+                    <div class="character-card" data-character="tobias">
+                        <img src="eneias.jpeg" class="character-icon" alt="tobias">
+                        <div class="character-name">Tobias</div>
+                    </div>
+                    <div class="character-card" data-character="Zumbi">
+                        <img src="Zumbi.jpeg" class="character-icon" alt="Zumbi">
+                        <div class="character-name">Zumbi dos Palmares</div>
+                    </div>
+                    <div class="character-card" data-character="vargas">
+                        <img src="vargas.jpeg" class="character-icon" alt="vargas">
+                        <div class="character-name">Gertulio Vargas</div>
+                    </div>
+                    <div class="character-card" data-character="ussop">
+                        <img src="ussop.jpeg"class="character-icon" alt="ussop">
+                        <div class="character-name">Maria Quiteria</div>
+                    </div>
+                    <div class="character-card" data-character="lula">
+                        <img src="lula.jpeg" class="character-icon" alt="lula">
+                        <div class="character-name">Jose Wilson Siqueira</div>
+                    </div>
+                    <div class="character-card" data-character="edina">
+                        <img src="edina.jpeg" class="character-icon" alt="edina">
+                        <div class="character-name">Enedina Alves Marques</div>
+                    </div>
+                    <div class="character-card" data-character="velha">
+                        <img src="velha.jpeg" class="character-icon" alt="velha">
+                        <div class="character-name">Esperança Garcia</div>
+                    </div>
+                    <div class="character-card" data-character="XiqueXique">
+                        <img src="xiquexique.jpeg" class="character-icon" alt="XiqueXique">
+                        <div class="character-name">Ariano Sussuna</div>
+                    </div>
+                    <div class="character-card" data-character="adolf">
+                        <img src="adolf.jpeg" class="character-icon" alt="adolf">
+                        <div class="character-name">Eduardo Ribeiro</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para detalhes do personagem -->
+    <div class="modal" id="character-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="character-details" id="character-details">
+                <!-- Conteúdo preenchido por JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>RPG Temático do Brasil - Explorando o folclore e a cultura brasileira através de aventuras épicas</p>
+        <p>© 2023 - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        // Dados dos personagens
+        const characters = {
+            anita: {
+                name: "Anita Garibaldi",
+                image: "ANITA.png",
+                bio: "Conhecida como a 'Heroína dos Dois Mundos', Anita Garibaldi foi uma revolucionária brasileira que lutou ao lado de seu marido, Giuseppe Garibaldi, em conflitos no Brasil e na Itália. Nascida em Santa Catarina, ela se tornou um símbolo de bravura, determinação e amor pela liberdade.",
+                stats: {
+                    
+                }
+            },
+            iara: {
+                name: "Antonio Lemos",
+                image: "Antonio Lemos.png",
+                bio: "Intendente de Belém, responsável por grandes reformas urbanas e modernização da cidade. Sua habilidade passiva poderia ser Analítico (pela sua visão de planejamento urbano e capacidade de execução de projetos) ou Influente (pela sua liderança e impacto na transformação da cidade). ",
+                stats: {
+                  
+                }
+            },
+            tupa: {
+                name: "Juscelino Kubitschek",
+                image: "1.jpeg",
+                bio: "Presidente do Brasil, idealizador e responsável pela construção de Brasília. Sua habilidade passiva poderia ser Influente (pela sua capacidade de concretizar um projeto de tamanha magnitude) ou Carismático (pela sua liderança e mobilização para a construção da nova capital).",
+                stats: {
+                   
+                }
+            },
+            pedro: {
+                name: "Marechal Candido Rondomro",
+                image: "@.jpeg",
+                bio: " (Já mencionado em Mato Grosso, mas fundamental para Rondônia, que leva seu nome). Explorador, militar e sertanista, responsável pela construção de linhas telegráficas e pela defesa dos povos indígenas na região. Sua habilidade passiva poderia ser Diplomata (pela sua atuação na pacificação de tribos indígenas e na construção de infraestrutura) ou Analítico (pela sua capacidade de planejamento e execução de grandes projetos de exploração",
+                stats: {
+                    
+                }
+            },
+            maria: {
+                name: "Maria Firmina dos Reis",
+                image: "Maria.jpeg",
+                bio: "Escritora maranhense, considerada a primeira romancista brasileira. Sua habilidade passiva poderia ser Carismático (pela sua influência na literatura e na luta contra a escravidão) ou Persuasivo (pela sua capacidade de expressar ideias e influenciar através da escrita). Mato Grosso (MT)",
+              stats: {
+                    
+                }
+            },
+            curupira: {
+                name: "Maria Ortiz",
+                image: "Oitis.jpeg",
+                bio: "Heroína capixaba que defendeu Vitória de invasores holandeses. Sua habilidade passiva poderia ser Analítico (estratégia e observação para defender a cidade). Goiás (GO) • Bartolomeu Bueno da Silva (Anhanguera) (1672-1740): Bandeirante que explorou e descobriu ouro em Goiás, fundando o Arraial de Sant'Anna. Sua habilidade passiva poderia ser Analítico (pela sua capacidade de exploração e descoberta de recursos). Maranhão (MA)",
+                stats: {
+                   
+                }
+            },
+            nisia: {
+                name: "Nísia Floresta",
+                image: "Floresta.jpeg",
+                bio: " Educadora, escritora e precursora do feminismo no Brasil. Sua habilidade passiva poderia ser Persuasivo (pela sua defesa dos direitos das mulheres e da educação) ou Influente (pelo seu impacto na sociedade da época). Rio Grande do Sul (RS)",
+                stats: {
+                    
+                }
+            },
+            soldado: {
+                name: "Plácido de Castro",
+                image: "sordadinho.jpeg",
+                bio: "Líder da Revolução Acreana, que resultou na anexação do Acre ao Brasil. Sua habilidade passiva poderia ser Influente (liderança e capacidade de mobilizar pessoas para um objetivo comum) ou Carismático (capacidade de atrair apoio e simpatia). ",
+                stats: {
+                    
+                }
+            },
+            paulo: {
+                name: "Paulo Freire",
+                image: "Veio.jpeg",
+                bio: " Líder da Revolução Acreana, que resultou na anexação do Acre ao Brasil. Sua habilidade passiva poderia ser Influente (liderança e capacidade de mobilizar pessoas para um objetivo comum) ou Carismático (capacidade de atrair apoio e simpatia).",
+                stats: {
+                    
+                }
+            },
+             Juca: {
+                name: "Romero Jucá",
+                image: "stali.jpeg",
+                bio: "Primeiro governador de Roraima após sua elevação a estado em 1988. Sua habilidade passiva poderia ser Influente (pela sua atuação política na formação e desenvolvimento do estado) ou Diplomata (pela sua capacidade de articulação política). Santa Catarina (SC)",
+                stats: {
+                    
+                }
+            },
+            tobias: {
+                name: "Tobias Barretsos",
+                image: "eneias.jpeg",
+                bio: " Filósofo, jurista, poeta e crítico, um dos maiores intelectuais brasileiros do século XIX. Sua habilidade passiva poderia ser Analítico (pela sua profundidade de pensamento e contribuições para o direito e a filosofia) ou Persuasivo (pela sua capacidade de influenciar o pensamento da época).",
+                stats: {
+                    
+                }
+            },
+             Zumbi: {
+                name: "Zumbi dos Palmares",
+                image: "Zumbi.jpeg",
+                bio: "Líder do Quilombo dos Palmares, símbolo da resistência negra à escravidão no Brasil. Sua habilidade passiva poderia ser Influente (pela sua capacidade de liderar e inspirar a resistência) ou Carismático (pela sua liderança e mobilização de escravos e indígenas).",
+                stats: {
+                    
+                }
+            },
+             saci: {
+                name: "Paulo Freire",
+                image: "Veio.jpeg",
+                bio: "Educador e filósofo pernambucano, um dos pensadores mais importantes da história da pedagogia mundial. Sua habilidade passiva poderia ser Persuasivo (pela sua capacidade de transformar a realidade através da educação e do diálogo) ou Carismático (pela sua influência e ",
+                stats: {
+                    
+                }
+            },
+            vargas: {
+                name: "Gertulio Vargas",
+                image: "vargas.jpeg",
+                bio: "Presidente do Brasil por dois períodos, com grande impacto na política e sociedade brasileira. Sua habilidade passiva poderia ser Influente (pela sua capacidade de moldar a política e a sociedade) ou Persuasivo (pela sua oratória e capacidade de mobilizar apoio popular). Rondônia (RO)",
+                stats: {
+                    
+                }
+            },
+             ussop: {
+                name: "Maria Quiteria",
+                image: "ussop.jpeg",
+                bio: "Heroína da Independência do Brasil, nascida na Bahia, que se alistou no exército disfarçada de homem. Sua habilidade passiva poderia ser Carismático (inspirou outros a lutar pela independência) ou Influente (sua participação teve impacto significativo na luta). Ceará (CE) • Dragão do Mar (Francisco José do Nascimento) (1848-1899): Jangadeiro e líder abolicionista cearense. Sua habilidade passiva poderia ser Carismático (capacidade de inspirar e mobilizar pessoas para a causa abolicionista). Espírito Santo (ES)",
+                stats: {
+                    
+                }
+            },
+             lula: {
+                name: "Jose Wilson Siqueira",
+                image: "lula.jpeg",
+                bio: "Político, primeiro governador do Tocantins, considerado o pai da criação do estado. Sua habilidade passiva poderia ser Influente (pela sua atuação política na criação e desenvolvimento do estado) ou Persuasivo (pela sua capacidade de articular e convencer sobre a necessidade do novo estado). Distrito Federal (DF)",
+                stats: {
+                    
+                }
+            },
+             edina: {
+                name: "Enedina Alves Marques",
+                image: "edina.jpeg",
+                bio: " Primeira engenheira negra do Brasil e a primeira mulher a se formar em engenharia no Paraná. Sua habilidade passiva poderia ser Analítico (pela sua capacidade intelectual e pioneirismo na engenharia) ou Influente (pela sua importância como figura inspiradora e quebra de barreiras).",
+                stats: {
+                    
+                }
+            },
+             velha: {
+                name: "Esperança Garcia",
+                image: "Velha.jpeg",
+                bio: "Escrava que escreveu uma carta ao governador do Piauí, considerada a primeira petição por direitos humanos no Brasil. Sua habilidade passiva poderia ser Diplomata (pela sua coragem e habilidade em buscar justiça através da comunicação) ou Persuasivo (pela força de sua argumentação e impacto de sua carta). Rio de Janeiro (RJ) • Tia Ciata (Hilária Batista de Almeida) (1854-1924): Sambista e cozinheira, figura central na formação do samba carioca e na cultura afro-brasileira. Sua habilidade passiva poderia ser Carismático (pela sua capacidade de agregar e influenciar a cultura do samba) ou Diplomata (pela sua habilidade em mediar e promover a cultura afro-brasileira em um período de repressão). Rio Grande do Norte (RN)",
+                stats: {
+                    
+                }
+            },
+            XiqueXique: {
+                name: "Ariano Suassuna",
+                image: "xiquexique.jpeg",
+                bio: " Escritor, dramaturgo e poeta paraibano, um dos maiores nomes da cultura brasileira. Sua habilidade passiva poderia ser Carismático (pela sua oratória e capacidade de encantar o público) ou Persuasivo (pela sua habilidade em transmitir ideias e valores através de suas obras). Paraná (PR)",
+                stats: {
+                    
+                }
+            },
+            adolf: {
+                name: "Eduardo Ribeiro",
+                image: "adolf.jpeg",
+                bio: "Governador do Amazonas, conhecido por sua visão de desenvolvimento para o estado. Sua habilidade passiva poderia ser Analítico (visão estratégica e capacidade de tomar decisões racionais).",
+                stats: {
+                    
+                }
+            }
+            // Os outros personagens teriam estruturas similares
+        };
+
+        // Mostrar/ocultar personagens
+        document.getElementById('view-characters').addEventListener('click', function(e) {
+            e.preventDefault();
+            const characterSection = document.getElementById('characters-section');
+            characterSection.style.display = 'block';
+            characterSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Modal para detalhes do personagem
+        const modal = document.getElementById('character-modal');
+        const closeModal = document.getElementById('close-modal');
+        const characterDetails = document.getElementById('character-details');
+
+        // Adicionar evento de clique para cada card de personagem
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const characterId = card.getAttribute('data-character');
+                const character = characters[characterId];
+                
+                if (character) {
+                    // Preencher os detalhes do personagem no modal
+                    characterDetails.innerHTML = `
+                        <img src="${character.image}" class="character-image" alt="${character.name}">
+                        <h2>${character.name}</h2>
+                        <p class="character-class">${character.class}</p>
+                        <p class="character-bio">${character.bio}</p>
+                        <div class="character-stats">
+                            ${Object.entries(character.stats).map(([stat, value]) => `
+                                <div class="stat">
+                                    <div class="stat-name">${stat}</div>
+                                    <div class="stat-value">${value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    // Mostrar o modal
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        // Fechar o modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Fechar o modal clicando fora dele
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
